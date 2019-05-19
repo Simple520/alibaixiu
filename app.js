@@ -6,8 +6,6 @@
 const express = require('express')
 const ejs = require('ejs')
 const bodyParser = require('body-parser')
-
-
 // const demoRouter = require('./router/demoRouter.js')
 const usersRouter = require('./router/usersRouter.js')
 const categoryRouter = require('./router/categoryRouter.js')
