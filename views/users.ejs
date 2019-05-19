@@ -204,6 +204,9 @@
           alert(msg)
           //重新渲染数据
           getAllUsers()
+        } else if (status === 304) {
+          alert(msg)
+          window.location='/login'
         } else {
           alert(msg)
           getAllUsers()
@@ -233,6 +236,9 @@
           $('#tbody').html(thtml)
           //方法一： 用于解决点触发按钮事件失效
           // bindEditHandler()
+        } else if(status === 304) {
+          alert(msg)
+          window.location='/login'
         }
       }
     })
@@ -259,7 +265,10 @@
             alert(msg)
             //重新渲染页面
             getAllUsers()
-          } else {
+          } else if (status === 304) {
+          alert(msg)
+          window.location='/login'
+        }else {
             alert('删除失败')
           }
         }
@@ -311,6 +320,9 @@
           //将新增用户改为修改用户
           let html = template('editUser', data)
           $('#form').html(html)
+        }else if (status === 304) {
+          alert(msg)
+          window.location='/login'
         }
       }
     })
@@ -417,7 +429,10 @@
           alert(msg)
           //重新渲染页面
           getAllUsers()
-        } else {
+        }else if (status === 304) {
+          alert(msg)
+          window.location='/login'
+        }else {
           alert(msg)
         }
       }
