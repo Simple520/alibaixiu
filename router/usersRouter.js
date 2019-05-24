@@ -8,15 +8,16 @@ const router = express.Router()
 // 原因： 因为如果将该路由放在最前面，执行任何请求对应的路由都会执行该中间件
 // 只要不符合中间件里面的处理逻辑，就不会往下执行后面的代码
 // 解决方案: 在app.js 中将loginRouter路由注册提前
-// router.use((req, res, next) => {
-//         // 验证是否登录
-//         if (req.session.user) {
-//                 next()
-//         } else {
-//                 // 还没有登录，跳转到登录页面
-//                 res.send(`<script>alert('你还没有登录');window.location='/login'</script>`)
-//         }
-// })
+// 为了省去麻烦， 这里使用的是统一登录验证
+router.use((req, res, next) => {
+        // 验证是否登录
+        if (req.session.user) {
+                next()
+        } else {
+                // 还没有登录，跳转到登录页面
+                res.send(`<script>alert('你还没有登录');window.location='/login'</script>`)
+        }
+})
 
 // 得到静态页面
 
