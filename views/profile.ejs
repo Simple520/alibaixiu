@@ -1,0 +1,115 @@
+<% include layout/header %>
+  <div class="main">
+    <% include layout/nav %>
+    <div class="container-fluid">
+      <div class="page-title">
+        <h1>我的个人资料</h1>
+      </div>
+      <!-- 有错误信息时展示 -->
+      <!-- <div class="alert alert-danger">
+        <strong>错误！</strong>发生XXX错误
+      </div> -->
+      <form class="form-horizontal">
+        <!-- 隐藏域 id -->
+        <input type="hidden" name="id" value="<%=id %>" id="id">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">头像</label>
+          <div class="col-sm-6">
+            <label class="form-image">
+              <input id="avatar" type="file">
+              <img src="<%=avatar %>" id="avaterImg">
+              <i class="mask fa fa-upload"></i>
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email" class="col-sm-3 control-label">email</label>
+          <div class="col-sm-6">
+            <input id="email" class="form-control" name="email" type="type" value="<%=email %>" placeholder="邮箱" readonly>
+            <p class="help-block">登录邮箱不允许修改</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="slug" class="col-sm-3 control-label">别名</label>
+          <div class="col-sm-6">
+            <input id="slug" class="form-control" name="slug" type="type" value="<%=slug %>" placeholder="slug">
+            <p class="help-block">https://zce.me/author/<strong>zce</strong></p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="nickname" class="col-sm-3 control-label">昵称</label>
+          <div class="col-sm-6">
+            <input id="nickname" class="form-control" name="nickname" type="type" value="<%=nickname %>" placeholder="昵称">
+            <p class="help-block">限制在 2-16 个字符</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="bio" class="col-sm-3 control-label">简介</label>
+          <div class="col-sm-6">
+            <textarea id="bio" class="form-control" placeholder="Bio" cols="30" rows="6"><%=bio %></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-6">
+            <button type="submit" class="btn btn-primary" id="updateBtn">更新</button>
+            <a class="btn btn-link" href="/password-reset">修改密码</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<% include layout/aside %>
+<% include layout/footer %>
+<script>
+  // 给图片上传按钮绑定点击事件
+  $('#avatar').change(function () {
+    // 得到选择的图片
+    var imgObj = $('#avatar')[0].files[0]
+    // console.log(imgObj)
+    // 创建一个虚拟路径
+    var imgUrl = URL.createObjectURL(imgObj) // blob:http://localhost:3000/7092548e-08e0-4ad4-a877-2de55469a607
+    // console.log(imgUrl)
+    // 给img标签设置src属性
+    $('#avaterImg').attr('src',imgUrl)
+  })
+  
+    // 给更新按钮绑定点击事件 
+    $('#updateBtn').on('click',function (event) {
+      // 阻止默认行为
+      event.preventDefault()
+      // 获取参数
+      // 注意点,参数中带有文件上传的,使用FormData的方式拼接参数
+      var fd = new FormData()
+      // 添加参数
+      fd.append('id',  $('#id').val())
+      fd.append('email', $('#email').val())
+      fd.append('slug', $('#slug').val())
+      fd.append('nickname', $('#nickname').val())
+      fd.append('bio', $('#bio').val())
+      if ($('#avatar')[0].files[0]) {
+          // 上传的文件参数,浏览器帮我们把这个文件以一定编码打包好了
+          fd.append('avatar', $('#avatar')[0].files[0])
+      } else {
+        fd.append('avatar', $('#avaterImg').attr('src'))
+      }
+
+      // 发送异步请求
+      $.ajax({
+        url: '/profileUpDate',
+        type:'POST',
+        processData: false,
+        contentType: false,
+        data:fd,
+        success: function (result) {
+          if (result.status == 200) {
+            alert(result.msg)
+            window.location = '/users'
+          } else {
+            alert(result.msg)
+          }
+        }
+      })
+
+    })
+</script>

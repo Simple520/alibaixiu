@@ -29,5 +29,29 @@
 // }
 let db = require('./db.js')
 module.exports = {
-    query: db.query
+    query: db.query,
+    profileUpdata: (obj, callback) => { // obj 为参数对象
+        // 执行sql语句
+        let sql = `UPDATE users SET email= '${obj.email}', avatar= '${obj.avatar}', slug= '${obj.slug}', nickname= '${obj.nickname}', bio = '${obj.bio}' WHERE id =${obj.id}`
+        // console.log(sql)
+        db.query(sql, (err,result) => {
+            callback(err, result)
+        })
+    },
+    // 根据id获取旧密码
+    getpwdById: (id, callback) => {
+        // 执行sql语句
+        let sql = `SELECT * FROM users WHERE id =${id}`
+        db.query(sql, (err,result) => {
+            callback(err, result)
+        })
+    },
+    // 修改密码
+    updatepwd: (newpwd, id, callback) => {
+        // 执行sql语句
+         let sql = `UPDATE users SET password = '${newpwd}' WHERE id=${id}`
+         db.query(sql, (err,result) => {
+            callback(err, result)
+        })
+    }
 }

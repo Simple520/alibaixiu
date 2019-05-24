@@ -25,7 +25,7 @@ module.exports = {
                     msg: '邮箱或者密码不正确'
                 })
             }
-            if (result[0].password != params.password) {
+            if (result[0].password != params.password) { 
                 return res.send({
                     status: 401,
                     msg: '密码不正确'
@@ -36,13 +36,31 @@ module.exports = {
             // 暂时有一个问题存在： user 中存的应该是用户名，而不是邮箱
             req.session.user = {
                 email: params.email,
-                password: params.password
+                password: params.password,
+                nickname: result[0].nickname,
+                id: result[0].id,
+                slug:result[0].slug,
+                avatar: result[0].avatar,
+                bio: result[0].bio
             }
+            //   console.log(req.session.user.avatar)
             res.send({
                 status: 200,
                 msg: '登录成功'
             })
         })
-        // 3.0 响应处理结果
+        
+    },
+    // 删除登录信息
+    loginOut: (req,res) => {
+        if (req.session.user) {
+            // console.log('get session')
+            // 清除session
+            req.session.user = null
+            res.send({
+                status: 200,
+                msg: '退出成功'
+            })
+        }
     }
 }

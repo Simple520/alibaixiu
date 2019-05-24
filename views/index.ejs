@@ -1,0 +1,60 @@
+<% include layout/header %>
+  <div class="main">
+    <% include layout/nav %>
+    <div class="container-fluid">
+      <div class="jumbotron text-center">
+        <h1>One Belt, One Road</h1>
+        <p>Thoughts, stories and ideas.</p>
+        <p><a class="btn btn-primary btn-lg" href="post-add.html" role="button">写文章</a></p>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">站点内容统计：</h3>
+            </div>
+            <ul class="list-group" id="ul">
+             
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+      </div>
+    </div>
+  </div>
+
+<% include layout/aside %>
+<% include layout/footer %>
+<!-- 数据模板 -->
+<script id="tmp" type="text/html">
+  <li class="list-group-item"><strong>{{totalArticle}}</strong>篇文章（<strong>{{draftedArticle}}</strong>篇草稿）</li>
+  <li class="list-group-item"><strong>{{totalCategories}}</strong>个分类</li>
+  <li class="list-group-item"><strong>{{totalComments}}</strong>条评论（<strong>{{heldComments}}</strong>条待审核）</li>
+</script>
+<script>
+  // 封装一个函数用于更新页面数据
+  function getChangeDate() {
+    // 发送异步请求
+    $.ajax({
+      url: '/renderDate',
+      type: 'GET',
+      success: res => {
+        let {status, data} = res
+        if (status == 200) {
+          let obj = {
+            totalArticle: data[0][0]['COUNT(*)'], 
+            draftedArticle: data[1][0]['COUNT(*)'],
+            totalCategories: data[2][0]['COUNT(*)'],
+            totalComments:  data[3][0]['COUNT(*)'],
+            heldComments:  data[4][0]['COUNT(*)']
+          }
+          console.log(obj)
+          let html = template('tmp', obj)
+          $('#ul').html(html)
+        }
+      }
+    })
+  }
+  getChangeDate()
+</script>

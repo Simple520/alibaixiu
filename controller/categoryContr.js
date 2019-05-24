@@ -6,7 +6,10 @@ module.exports = {
 
     // 1.0 处理响应页面
     category: (req, res) => {
-        res.render('category', {})
+        // 将昵称渲染到页面中
+        let nickname = req.session.user.nickname
+        let avatar = req.session.user.avatar
+        res.render('category', {nickname, avatar})
     },
     // 2.0 获取所有分类信息的处理逻辑
     getAllCategroies: (req, res) => {

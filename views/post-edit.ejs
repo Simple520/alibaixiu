@@ -1,0 +1,150 @@
+<% include layout/header %>
+<div class="main">
+    <% include layout/nav %>
+    <div class="container-fluid">
+        <div class="page-title">
+            <h1>修改文章</h1>
+        </div>
+        <!-- 有错误信息时展示 -->
+        <!-- <div class="alert alert-danger">
+        <strong>错误！</strong>发生XXX错误
+      </div> -->
+        <form class="row" id="form">
+
+        </form>
+    </div>
+</div>
+<!-- 王诗瑶 -->
+
+<% include layout/aside %>
+<% include layout/footer %>
+<script id="tmp" type="text/html">
+    <!-- 表单隐藏域 id  -->
+    <input type="hidden" name="id" value="{{data.id}}" id ="id">
+    <div class="col-md-9">
+        <div class="form-group">
+            <label for="title">标题</label>
+            <input id="title" class="form-control input-lg" name="title" type="text" placeholder="文章标题"
+                value="{{ data.title }}">
+        </div>
+        <div class="form-group">
+            <label for="content">内容</label>
+            <textarea id="content" class="form-control input-lg" name="content" cols="30" rows="10"
+                placeholder="内容">{{ data.content }}</textarea>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label for="slug">别名</label>
+            <input id="slug" class="form-control" name="slug" type="text" placeholder="slug" value="{{ data.slug }}">
+            <p class="help-block">https://zce.me/post/<strong>slug</strong></p>
+        </div>
+        <div class="form-group">
+            <label for="feature">特色图像</label>
+            <!-- show when image chose -->
+            <img class="help-block thumbnail" src="{{data.feature}}" id="imgID">
+            <input id="feature" class="form-control" name="feature" type="file">
+        </div>
+        <div class="form-group">
+            <label for="category">所属分类</label>
+            <select id="category" class="form-control" name="category">
+                {{each category}}
+                <option value="{{$value.id}}" {{if $value.id == data.category_id}} selected {{/if}}>{{$value.name}}
+                </option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="created">发布时间</label>
+            <input id="created" class="form-control" name="created" type="datetime-local"
+                value="{{ data.created.split('.')[0] }}">
+        </div>
+        <div class="form-group">
+            <label for="status">状态</label>
+            <select id="status" class="form-control" name="status">
+                <option value="drafted" {{ if data.status == 'drafted'}} selected {{/if}}>草稿</option>
+                <option value="published" {{ if data.status == 'published'}} selected {{/if}}>已发布</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit" id="upbtn">修改</button>
+        </div>
+    </div>
+</script>
+<script>
+    // 封装一个函数用于获取数据并且渲染数据
+    function getData() {
+        // 获取url地址栏中的id
+        let url = window.location.href
+        let id = url.split('?')[1]
+        $.ajax({
+            url: '/postDataById?' + id,
+            type: 'GET',
+            success: res => {
+                let {
+                    status
+                } = res
+                if (status == 200) {
+                    console.log(res)
+                    // 模板渲染
+                    let obj = {
+                        data: res.data[0][0],
+                        category: res.data[1]
+                    }
+                    let html = template('tmp', obj)
+                    $('#form').html(html)
+
+
+                }
+            }
+        })
+    }
+    getData()
+
+    // 给文件上传表单绑定事件： 实现图片预览
+    $('#form').on('change', '#feature', function () {
+        // console.log($('#feature'))
+        var files = $('#feature')[0].files[0] // 是对象
+        // 创建虚拟路径
+        var url = URL.createObjectURL(files)
+        // 修改img标签的src
+        $('#imgID').attr('src', url)
+    })
+    // 给修改按钮绑定点击事件： 事件委托
+    $('#form').on('click', '#upbtn', function (event) {
+        // 阻止默认行为
+        event.preventDefault()
+        // 获取表单中所有的数据
+        // 创建formdata对象
+        var fd = new FormData()
+        fd.append('id', $('#id').val())
+        fd.append('title', $('#title').val())
+        fd.append('slug', $('#slug').val())
+        fd.append('category', $('#category').val())
+        fd.append('created', $('#created').val())
+        fd.append('status', $('#status').val())
+        fd.append('content', $('#content').val())
+        // 判断是否选择文件
+        if ($('#feature')[0].files[0]) {
+            fd.append('feature', $('#feature')[0].files[0])
+        } else {
+            fd.append('feature', $('#imgID').attr('src'))
+        }
+       $.ajax({
+           url: '/updataPostedit',
+           type: 'POST',
+           processData: false,
+           contentType: false,
+           data: fd,
+           success: (res) => {
+             if (res.status == 200) {
+                 alert(res.msg)
+                 window.location = '/posts'
+             } else {
+                alert(res.msg)
+             }
+           }
+       })
+   
+    })
+</script>

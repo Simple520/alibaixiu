@@ -388,15 +388,16 @@
 
   $('#tbody').on('click', '.checkItems', function () {
     //获取被选中的选择框的个数
-    let selCount = 0
-    $('.checkItems').each((key, ele) => {
-      //console.log(key + '=======' + ele)
-      // ele 为每一个元素
-      let result = $(ele).prop('checked')
-      if (result) {
-        selCount++
-      }
-    })
+    let selCount = $('#tbody input[type="checkbox"]:checked').length
+    // $('.checkItems').each((key, ele) => {
+    //   //console.log(key + '=======' + ele)
+    //   // ele 为每一个元素
+    //   let result = $(ele).prop('checked')
+    //   if (result) {
+    //     selCount++
+    //   }
+    // })
+    
     //console.log(selCount)
     //如果选中个数大于2则显示批量删除,否则隐藏批量删除按钮
     selCount >= 2 ? $('#delAllbtn').show() : $('#delAllbtn').hide()

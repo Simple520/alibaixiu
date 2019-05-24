@@ -6,3 +6,24 @@
 </script>
 </body>
 </html>
+<script>
+    // 首先思考的是为什么在footer 给nav 中的推出按钮绑定点击事件
+    // 原因是： 因为jquery是在footer中，要使用jquery，所以必须在footer中触发事件
+    // 给退出按钮绑定一个点击事件
+    $('#loginOut').on('click',function (event) {
+        // 阻止默认行为
+       event.preventDefault()
+       $.ajax({
+           url: '/loginOut',
+           type: 'GET',
+           dataType: 'JSON',
+           success: res => {
+               let {status,msg} = res
+               if (status == 200) {
+                   alert(msg)
+                   window.location='/login'
+               }
+           }
+       })
+    })
+</script>

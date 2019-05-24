@@ -27,6 +27,11 @@ router.get('/users', userContr.getUsers)
         .get('/getIdData',userContr.getIdData)//添加一个根据用户id获取数据的路由
         .post('/editPost',userContr.editPost)//添加一个处理修改用户信息后提交的路由
         .post('/delUsers',userContr.delUsers)//添加一个处理批量删除的路由
+        .get('/profile',userContr.profile) // 个人中心页面请求的路由
+        .post('/profileUpDate', userContr.profileUpDate) // 添加一个中心修改信息后的提交路由
+        .get('/password-reset', userContr.password_reset)
+        .post('/updatapwd', userContr.updatapwd)
+        
 
 //优化代码 ： 1.0 具名函数 2.0express的链式编程特点
 

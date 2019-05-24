@@ -5,7 +5,7 @@ module.exports = {
     // 根据邮箱验证密码
     getPwdByEmail: (email, callback) => {
         // 执行sql语句
-        let sql = `SELECT password FROM users WHERE email = '${email}'`
+        let sql = `SELECT id,nickname,password, avatar,bio,status,slug FROM users WHERE email = '${email}'`
         // console.log(sql)
         db.query(sql, (err, result) => {
             callback(err, result)

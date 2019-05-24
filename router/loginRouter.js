@@ -5,4 +5,5 @@ const router = express.Router()
 
 router.get('/login',loginContr.getLogin)// 添加一个得到登录页面的路由
       .post('/loginPostData', loginContr.loginPostData) // 添加一个登录验证的路由
+      .get('/loginOut',loginContr.loginOut)
 module.exports = router
