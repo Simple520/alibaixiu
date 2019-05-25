@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <div class="wrapper">
+  <div class="wrapper" id ="body">
     <div class="topnav">
       <ul>
         <li><a href="javascript:;"><i class="fa fa-glass"></i>奇趣事</a></li>
@@ -92,33 +92,17 @@
     </div>
     <div class="content">
       <div class="swipe">
-        <ul class="swipe-wrapper">
-          <li>
-            <a href="#">
-              <img src="/static/uploads/slide_1.jpg">
-              <span>XIU主题演示</span>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <img src="/static/uploads/slide_2.jpg">
-              <span>XIU主题演示</span>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <img src="/static/uploads/slide_1.jpg">
-              <span>XIU主题演示</span>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <img src="/static/uploads/slide_2.jpg">
-              <span>XIU主题演示</span>
-            </a>
-          </li>
+        <ul class="swipe-wrapper" id="swipe">
+            <li>
+                <a href="{{$value.link}}">
+                  <img src="{{$value.image}}">
+                  <span>{{$value.text}}</span>
+                </a>
+              </li>
         </ul>
-        <p class="cursor"><span class="active"></span><span></span><span></span><span></span></p>
+        <p class="cursor" id="swipe2">
+            <span class="active"> </span>
+        </p>
         <a href="javascript:;" class="arrow prev"><i class="fa fa-chevron-left"></i></a>
         <a href="javascript:;" class="arrow next"><i class="fa fa-chevron-right"></i></a>
       </div>
@@ -233,6 +217,26 @@
     <li><a href="{{$value.link}}"><i class="{{$value.icon}}"></i>{{$value.text}}</a></li>
     {{/each}}
   </script>
+  <!-- 模板渲染轮播图 -->
+  <script id="slidTmp" type="text/html">
+    {{each data}}
+    <li>
+        <a href="{{$value.link}}">
+          <img src="{{$value.image}}">
+          <span>{{$value.text}}</span>
+        </a>
+      </li>
+    {{/each}}
+  </script>
+
+  <!-- 模板轮播图小点 -->
+  <script id="slidTmp2" type="text/html">
+    {{each data}}
+    <span></span>
+    {{/each}}
+  </script>
+
+
   <script>
     // 轮播图操作
     function lunbotu() {
@@ -272,6 +276,29 @@
       })
     }
     getnavData ()
+    // 渲染轮播图
+    function renderSlide () {
+      $.ajax({
+        url: '/showSlideData',
+        type: 'GET',
+        success: res => {
+          let {status, data} = res
+          if (status == 200) {
+            let obj = {
+              data: JSON.parse(data[0].value)
+            }
+            // 轮播图片
+            let html = template('slidTmp', obj)
+            // 轮播图小点
+            let html2 = template('slidTmp2', obj)
+            $('#swipe').html(html)
+            $('#swipe2').append(html2)
+            lunbotu()
+          }
+        }
+      })
+    }
+    renderSlide ()
   </script>
 </body>
 
